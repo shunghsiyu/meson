@@ -403,6 +403,12 @@ class EnvironmentVariables:
             env[name] = method(full_env, name, values, kwargs)
         return env
 
+    def from_env(self, other: 'EnvironmentVariables'):
+        for name in other.varnames:
+            self.varnames.add(name)
+        for var in other.envvars:
+            self.envvars.append(var)
+
 class Target:
     def __init__(self, name: str, subdir: str, subproject: str, build_by_default: bool, for_machine: MachineChoice):
         if has_path_sep(name):
