@@ -252,7 +252,10 @@ class EnvironmentVariablesHolder(MutableInterpreterObject, ObjectHolder):
                              'append': self.append_method,
                              'prepend': self.prepend_method,
                              })
-        if isinstance(initial_values, dict):
+        if isinstance(initial_values, EnvironmentVariablesHolder):
+            FeatureNew.single_use('Creating environment object from environment', '0.57.0', self.subproject)
+            self.held_object.from_env(initial_values.held_object)
+        elif isinstance(initial_values, dict):
             for k, v in initial_values.items():
                 self.set_method([k, v], {})
         elif isinstance(initial_values, list):
@@ -4746,7 +4749,7 @@ different subdirectory.
         elif len(args) == 1:
             FeatureNew.single_use('environment positional arguments', '0.52.0', self.subproject)
             initial_values = args[0]
-            if not isinstance(initial_values, dict) and not isinstance(initial_values, list):
+            if not isinstance(initial_values, EnvironmentVariablesHolder) and not isinstance(initial_values, dict) and not isinstance(initial_values, list):
                 raise InterpreterException('environment first argument must be a dictionary or a list')
         else:
             initial_values = {}
